@@ -11,10 +11,10 @@ class parameters:
     '''Super awesome py module written by Dmitry Karpovich - I'll fill this in later'''
 
     def __init__(self, params=None):
-        
+
         self.def_dict   = DEFAULTS.default_dict
-            
-    def param_writer(self, file, params, in_place=False):
+
+    def writer(self, file, params, in_place=False):
         '''A writer definition for writing new param files and overwriting old ones.  USE WITH CAUTION!'''
         
         if Path(file).is_file() and not in_place:
@@ -41,7 +41,7 @@ class parameters:
                     writer.writelines('{:30}{}{}'.format(value, '= ', params[key][value]) + '\n')
             print(f"Completed writing {list(params.keys())} to '{file}'.")
     
-    def param_loader(self, file):
+    def loader(self, file):
         '''A loader definition for loading script dependant parameters from file'''
         
         
@@ -54,7 +54,7 @@ class parameters:
                         found = True
                         response = literal_eval(input(f'Found Default "{file}". Generate?'))
                         if response:
-                            self.param_writer(file, self.def_dict[key]['DAT'])
+                            self.writer(file, self.def_dict[key]['DAT'])
                 if not found:
                     raise FileNotFoundError(f"""No reference to '{file}' in 'dat/DEFAULTS.py'.
                                             Check the file path and name.""")
@@ -105,7 +105,7 @@ class parameters:
         
         if user_input:
             response = input(f"Would you like to save your input to the default file?")
-            self.param_writer(file, param_nt, in_place=True)
+            self.writer(file, param_nt, in_place=True)
         
         return param_nt
     
@@ -117,4 +117,4 @@ class parameters:
             file_list.append(self.def_dict[x]['Default Path'])
 
         for x in file_list:
-            self.param_loader(x)
+            self.loader(x)
