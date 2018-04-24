@@ -19,4 +19,14 @@ default_dict =  {'PARAMS1':
                         'Section 2':
                             {'param 1'                  : 'True',
                              'param 2'                  : 'False'
+                                                        }}},
+                'MONGO':
+                    {'Default Path'                     : 'dat/mongo.info',
+                    'DAT':
+                        {'Location':
+                             {'IP'                      : '*',
+                             'Host'                     : '*'},
+                        'Info':
+                            {'DataBase'                 : '2 Fast',
+                             'Collection'               : '2 Furious'
                                                         }}}}

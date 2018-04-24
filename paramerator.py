@@ -14,10 +14,10 @@ class parameters:
         
         self.def_dict   = DEFAULTS.default_dict
             
-    def param_writer(self, file, params, default_location= True, overwrite=False):
+    def param_writer(self, file, params, in_place=False):
         '''A writer definition for writing new param files and overwriting old ones.  USE WITH CAUTION!'''
         
-        if Path(file).is_file():
+        if Path(file).is_file() and not in_place:
             overwrite = literal_eval(input(f'{file} already exists. Overwrite?  :'))
             if overwrite:
                 pass
@@ -59,14 +59,16 @@ class parameters:
                     raise FileNotFoundError(f"""No reference to '{file}' in 'dat/DEFAULTS.py'.
                                             Check the file path and name.""")
             else:
-                print(f"'{file}' no found or generated.")
+                print(f"'{file}' no file found or generated.")
                 return
         
         params_dict = OrderedDict()
+        user_input = False
         
         with open(file, mode='r') as fileObj:
         
             for line in fileObj:
+                
                 if not line:
                     continue
                 line = line.strip()
@@ -84,6 +86,7 @@ class parameters:
                         value = input(f'Required parameter "{key_value[0].strip()}" is missing: ')
                         while not value:
                             value = input(f'You must enter a value for "{key_value[0].strip()}": ')
+                        user_input = True
                     if "," in value:
                         try:
                             params_dict[section][key] = list(literal_eval(value))
@@ -100,4 +103,18 @@ class parameters:
         
         param_nt = namedtuple('section', params_dict.keys())(**params_dict)
         
+        if user_input:
+            response = input(f"Would you like to save your input to the default file?")
+            self.param_writer(file, param_nt, in_place=True)
+        
         return param_nt
+    
+    def generate_defaults(self):
+        '''Generate new new defualt files found in DEFAULTS.py'''
+        
+        file_list = []
+        for x in self.def_dict:
+            file_list.append(self.def_dict[x]['Default Path'])
+
+        for x in file_list:
+            self.param_loader(x)
